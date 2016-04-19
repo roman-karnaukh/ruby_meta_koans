@@ -1,27 +1,20 @@
+   def attribute(atr, &block)
 
-   def attribute(name, &block)
+     atr, value = atr.first if atr.is_a? Hash
 
-     name, value = name.first if name.is_a? Hash
-
-     define_method "#{name}" do
-       unless instance_variable_defined?(:"@#{name}")
-         if value
-           instance_variable_set(:"@#{name}", value)
-         elsif block
-           instance_variable_set(:"@#{name}", instance_eval(&block))
-         end
+     define_method "#{atr}" do
+       unless instance_variable_defined?("@#{atr}")
+         instance_variable_set("@#{atr}", value) if value
+         instance_variable_set("@#{atr}", instance_eval(&block)) if block
        end
-
-       instance_variable_get(:"@#{name}")
+       instance_variable_get("@#{atr}")
      end
 
-     define_method "#{name}=" do
-       instance_variable_set("@#{name}".to_sym, value)
-     end
+     define_method("#{atr}=") {|v| instance_variable_set("@#{atr}", v)}
 
-     define_method "#{name}?" do
-       return false if instance_variable_get(:"@#{name}").nil?
-       instance_variable_defined?(:"@#{name}")
+     define_method "#{atr}?" do
+       return false if instance_variable_get("@#{atr}").nil?
+       instance_variable_defined?("@#{atr}")
      end
    end
 
