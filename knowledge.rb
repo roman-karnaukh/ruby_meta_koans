@@ -3,11 +3,10 @@
      atr, value = atr.first if atr.is_a? Hash
 
      define_method "#{atr}" do
-       unless instance_variable_defined? "@#{atr}"
-         instance_variable_set("@#{atr}", value) if value
-         instance_variable_set("@#{atr}", instance_eval(&block)) if block
+       unless instance_variable_defined? :"@#{atr}"
+        send "#{atr}=", block_given? ? instance_eval(&block) : value
        end
-       instance_variable_get("@#{atr}")
+       instance_variable_get(:"@#{atr}")
      end
 
      define_method("#{atr}=") {|v| instance_variable_set("@#{atr}", v)}
